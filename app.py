@@ -24,21 +24,28 @@ st.markdown("""
         background-color: rgba(247, 247, 248);
         color: black;
         border: 1px solid #e5e5e5;
-        border-radius: 0.5rem;
+        border-radius: 0.75rem;
         width: 100%;
         text-align: center;
-        padding: 1rem;
-        margin: 0.5rem 0;
-        min-height: 80px;
+        padding: 0.75rem;
+        margin-bottom: 1rem;
+        min-height: 60px;
         display: flex;
         align-items: center;
         justify-content: center;
         box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+        font-size: 0.9rem;
     }
     .stButton button:hover {
         background-color: #ffffff;
         border-color: #FDB813;
         box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    div[data-testid="column"] {
+        padding: 0.5rem;
+    }
+    div[class^="stMarkdown"] > div {
+        margin-bottom: 0.5rem;
     }
     h1, h2, h3 {color: #333333;}
     .chat-message {
