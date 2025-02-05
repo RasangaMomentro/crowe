@@ -16,32 +16,10 @@ TWEAKS = {
 
 st.set_page_config(page_title="Crowe Malaysia Assistant", page_icon="🏢", layout="centered")
 
-# Updated CSS with new yellow color
 st.markdown("""
     <style>
     .stApp {background-color: #ffffff;}
     .stMarkdown {color: #333333;}
-    .stButton button {
-        background-color: #FDB813;
-        color: black;
-        border: none;
-        width: 100%;
-        text-align: left;
-        padding: 1rem;
-        margin: 0.2rem 0;
-    }
-    .stButton button:hover {background-color: #FFD700;}
-    h1, h2, h3 {color: #333333;}
-    .chat-message {
-        padding: 1rem;
-        border-radius: 0.5rem;
-        margin-bottom: 1rem;
-    }
-    .user-message {background-color: #f5f5f5;}
-    .assistant-message {
-        background-color: #fffbeb;
-        border-left: 5px solid #FDB813;
-    }
     .stButton button {
         background-color: #FDB813;
         color: black;
@@ -60,18 +38,16 @@ st.markdown("""
         background-color: #FFD700;
         border-color: #FDB813;
     }
-    .prompt-button {
-        background-color: rgba(247, 247, 248, 0.9);
-        border: 1px solid #e5e5e5;
+    h1, h2, h3 {color: #333333;}
+    .chat-message {
+        padding: 1rem;
         border-radius: 0.5rem;
-        padding: 0.8rem;
-        margin: 0.5rem 0;
-        cursor: pointer;
-        transition: background-color 0.2s;
+        margin-bottom: 1rem;
     }
-    .prompt-button:hover {
+    .user-message {background-color: #f5f5f5;}
+    .assistant-message {
         background-color: #fffbeb;
-        border-color: #FDB813;
+        border-left: 5px solid #FDB813;
     }
     </style>
 """, unsafe_allow_html=True)
@@ -110,7 +86,7 @@ st.markdown("""
     </div>
 """, unsafe_allow_html=True)
 
-# Sample prompts in ChatGPT style grid
+# Sample prompts in 3x2 grid
 col1, col2, col3 = st.columns(3)
 
 categories = {
@@ -128,6 +104,7 @@ categories = {
     ]
 }
 
+# Display prompts in columns
 for (col, (category, prompts)) in zip([col1, col2, col3], categories.items()):
     with col:
         st.markdown(f"""
@@ -137,31 +114,29 @@ for (col, (category, prompts)) in zip([col1, col2, col3], categories.items()):
         """, unsafe_allow_html=True)
         
         for prompt in prompts:
-            if st.button(prompt, key=f"sample_{prompt}", 
-                help=f"Click to ask about {prompt}"):
-            st.session_state.messages.append({"role": "user", "content": prompt})
-            with st.chat_message("user"):
-                st.markdown(prompt)
-            
-            with st.chat_message("assistant"):
-                with st.spinner("Processing..."):
-                    response = run_flow(prompt)
-                    try:
-                        if isinstance(response, dict):
-                            message = (response.get('outputs', [])[0]
-                                     .get('outputs', [])[0]
-                                     .get('results', {})
-                                     .get('message', {})
-                                     .get('data', {})
-                                     .get('text', 'No response received'))
-                            st.markdown(message)
-                            st.session_state.messages.append(
-                                {"role": "assistant", "content": message})
-                    except Exception as e:
-                        st.error(f"Error processing request: {str(e)}")
+            if st.button(prompt, key=f"sample_{prompt}"):
+                st.session_state.messages.append({"role": "user", "content": prompt})
+                with st.chat_message("user"):
+                    st.markdown(prompt)
+                
+                with st.chat_message("assistant"):
+                    with st.spinner("Processing..."):
+                        response = run_flow(prompt)
+                        try:
+                            if isinstance(response, dict):
+                                message = (response.get('outputs', [])[0]
+                                         .get('outputs', [])[0]
+                                         .get('results', {})
+                                         .get('message', {})
+                                         .get('data', {})
+                                         .get('text', 'No response received'))
+                                st.markdown(message)
+                                st.session_state.messages.append(
+                                    {"role": "assistant", "content": message})
+                        except Exception as e:
+                            st.error(f"Error processing request: {str(e)}")
 
-st.markdown("</div>", unsafe_allow_html=True)
-
+# Display chat history
 for message in st.session_state.messages:
     with st.chat_message(message["role"]):
         st.markdown(f"""
@@ -170,6 +145,7 @@ for message in st.session_state.messages:
             </div>
         """, unsafe_allow_html=True)
 
+# Chat input
 if prompt := st.chat_input("How can I help you today?"):
     st.session_state.messages.append({"role": "user", "content": prompt})
     with st.chat_message("user"):
