@@ -111,12 +111,12 @@ categories = {
         "What is the new Indirect Tax rate"
     ],
     "IPO": [
-        "What are the key accounting challenges when it comes to an IPO",
+        "What are the key accounting challenges for an IPO",
         "How can Crowe help my company with an IPO"
     ],
     "Investing in Malaysia": [
         "What is the cost of forming a business in Malaysia",
-        "What are the tax incentives available when investing in Malaysia"
+        "What are the tax incentives available for in Malaysia"
     ]
 }
 
