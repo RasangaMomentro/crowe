@@ -42,24 +42,23 @@ st.markdown("""
         background-color: #fffbeb;
         border-left: 5px solid #FDB813;
     }
-    .examples-grid {
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        gap: 1rem;
-        margin: 2rem 0;
-        padding: 1rem;
-        background-color: #f8f9fa;
+    .stButton button {
+        background-color: #FDB813;
+        color: black;
+        border: 1px solid #e5e5e5;
         border-radius: 0.5rem;
-    }
-    .category-column {
-        background-color: #ffffff;
+        width: 100%;
+        text-align: center;
         padding: 1rem;
-        border-radius: 0.5rem;
+        margin: 0.5rem 0;
+        min-height: 80px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
-    .category-title {
-        font-weight: bold;
-        margin-bottom: 1rem;
-        color: #333333;
+    .stButton button:hover {
+        background-color: #FFD700;
+        border-color: #FDB813;
     }
     .prompt-button {
         background-color: rgba(247, 247, 248, 0.9);
@@ -112,7 +111,7 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # Sample prompts in ChatGPT style grid
-st.markdown("<div class='examples-grid'>", unsafe_allow_html=True)
+col1, col2, col3 = st.columns(3)
 
 categories = {
     "Taxation": [
@@ -129,15 +128,17 @@ categories = {
     ]
 }
 
-for category, prompts in categories.items():
-    st.markdown(f"""
-        <div class='category-column'>
-            <div class='category-title'>{category}</div>
-        </div>
-    """, unsafe_allow_html=True)
-    
-    for prompt in prompts:
-        if st.button(prompt, key=f"sample_{prompt}"):
+for (col, (category, prompts)) in zip([col1, col2, col3], categories.items()):
+    with col:
+        st.markdown(f"""
+            <div style='font-weight: bold; margin-bottom: 1rem; color: #333333;'>
+                {category}
+            </div>
+        """, unsafe_allow_html=True)
+        
+        for prompt in prompts:
+            if st.button(prompt, key=f"sample_{prompt}", 
+                help=f"Click to ask about {prompt}"):
             st.session_state.messages.append({"role": "user", "content": prompt})
             with st.chat_message("user"):
                 st.markdown(prompt)
