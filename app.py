@@ -112,32 +112,70 @@ col1, col2, col3 = st.columns(3)
 
 categories = {
     "Taxation": [
-        "What are the key takeaways for corporate tax in 2024",
+        "What are the key take aways for corporate tax in 2024",
         "What is the new Indirect Tax rate"
     ],
     "IPO": [
-        "What are the accounting challenges for an IPO",
+        "What are the key accounting challenges when it comes to an IPO",
         "How can Crowe help my company with an IPO"
     ],
     "Investing in Malaysia": [
         "What is the cost of forming a business in Malaysia",
-        "What are the tax incentives for investing in Malaysia"
+        "What are the tax incentives available when investing in Malaysia"
     ]
 }
 
-# Display chat history
+# Display prompts in columns first
+st.markdown("""
+    <div style='text-align: center; margin: 2rem 0 1rem 0;'>
+        <h2 style='color: #333333; font-size: 1.5rem;'>Examples</h2>
+    </div>
+""", unsafe_allow_html=True)
+
+st.markdown("""
+    <div style='
+        background-color: #f7f7f8;
+        padding: 1.5rem;
+        border-radius: 0.75rem;
+        margin-bottom: 2rem;
+    '>
+""", unsafe_allow_html=True)
+
+col1, col2, col3 = st.columns(3)
+
+with st.container():
+    for (col, (category, prompts)) in zip([col1, col2, col3], categories.items()):
+        with col:
+            st.markdown(f"<div style='font-weight: bold; margin-bottom: 1rem; color: #333333;'>{category}</div>", 
+                       unsafe_allow_html=True)
+            for prompt in prompts:
+                if st.button(prompt, key=f"sample_{prompt}"):
+                    st.session_state.messages = [
+                        {"role": "user", "content": prompt}
+                    ]
+                    response = run_flow(prompt)
+                    try:
+                        if isinstance(response, dict):
+                            message = (response.get('outputs', [])[0]
+                                     .get('outputs', [])[0]
+                                     .get('results', {})
+                                     .get('message', {})
+                                     .get('data', {})
+                                     .get('text', 'No response received'))
+                            st.session_state.messages.append(
+                                {"role": "assistant", "content": message}
+                            )
+                    except Exception as e:
+                        st.error(f"Error processing request: {str(e)}")
+                    st.rerun()
+
+st.markdown("</div>", unsafe_allow_html=True)
+
+# Then display chat history
 for message in st.session_state.messages:
     with st.chat_message(message["role"]):
         st.markdown(f"<div class='chat-message {message['role']}-message'>{message['content']}</div>", 
                    unsafe_allow_html=True)
-
-# Display prompts in columns
-for (col, (category, prompts)) in zip([col1, col2, col3], categories.items()):
-    with col:
-        st.markdown(f"<div style='font-weight: bold; margin-bottom: 1rem; color: #333333;'>{category}</div>", 
-                   unsafe_allow_html=True)
-        for prompt in prompts:
-            if st.button(prompt, key=f"sample_{prompt}"):
                 with st.chat_message("user"):
                     st.markdown(prompt)
                 with st.chat_message("assistant"):
