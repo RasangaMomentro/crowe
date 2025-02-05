@@ -21,7 +21,7 @@ st.markdown("""
     .stApp {background-color: #ffffff;}
     .stMarkdown {color: #333333;}
     .stButton button {
-        background-color: #FDB813;
+        background-color: rgba(247, 247, 248);
         color: black;
         border: 1px solid #e5e5e5;
         border-radius: 0.5rem;
@@ -33,10 +33,12 @@ st.markdown("""
         display: flex;
         align-items: center;
         justify-content: center;
+        box-shadow: 0 1px 2px rgba(0,0,0,0.1);
     }
     .stButton button:hover {
-        background-color: #FFD700;
+        background-color: #ffffff;
         border-color: #FDB813;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     }
     h1, h2, h3 {color: #333333;}
     .chat-message {
@@ -86,7 +88,23 @@ st.markdown("""
     </div>
 """, unsafe_allow_html=True)
 
-# Sample prompts in 3x2 grid
+# Title for examples section
+st.markdown("""
+    <div style='text-align: center; margin: 2rem 0 1rem 0;'>
+        <h2 style='color: #333333; font-size: 1.5rem;'>Examples</h2>
+    </div>
+""", unsafe_allow_html=True)
+
+# Container for the grid
+st.markdown("""
+    <div style='
+        background-color: #f7f7f8;
+        padding: 1.5rem;
+        border-radius: 0.75rem;
+        margin-bottom: 2rem;
+    '>
+""", unsafe_allow_html=True)
+
 col1, col2, col3 = st.columns(3)
 
 categories = {
