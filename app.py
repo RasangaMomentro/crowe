@@ -84,7 +84,7 @@ st.markdown("""
     <div style='background-color: #fffbeb; padding: 1rem; border-radius: 0.5rem; 
     margin-bottom: 2rem; border-left: 5px solid #FDB813;'>
         Welcome to Crowe Malaysia's AI Assistant. I can help you with information 
-        about taxation, IPO services, and investing in Malaysia.
+        about taxation, IPO services, and investing in Malaysia, based on the wealth of knowledge available at Crowe
     </div>
 """, unsafe_allow_html=True)
 
@@ -94,12 +94,12 @@ categories = {
         "What is the new Indirect Tax rate"
     ],
     "IPO": [
-        "What are the key accounting challenges when it comes to an IPO",
+        "What are the key accounting challenges in an IPO",
         "How can Crowe help my company with an IPO"
     ],
     "Investing in Malaysia": [
         "What is the cost of forming a business in Malaysia",
-        "What are the tax incentives available when investing in Malaysia"
+        "What are the tax incentives for investing in Malaysia"
     ]
 }
 
