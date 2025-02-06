@@ -75,7 +75,7 @@ def run_flow(message: str, endpoint: str = FLOW_ID, output_type: str = "chat",
         return {"error": str(e)}
 
 def process_prompt(prompt):
-    st.session_state.messages = []
+    # Append to existing messages instead of clearing
     st.session_state.messages.append({"role": "user", "content": prompt})
     response = run_flow(prompt)
     try:
@@ -111,12 +111,12 @@ categories = {
         "What is the new Indirect Tax rate"
     ],
     "IPO": [
-        "What are the key accounting challenges for an IPO",
+        "What are the key accounting challenges when it comes to an IPO",
         "How can Crowe help my company with an IPO"
     ],
     "Investing in Malaysia": [
         "What is the cost of forming a business in Malaysia",
-        "What are the tax incentives available for in Malaysia"
+        "What are the tax incentives available when investing in Malaysia"
     ]
 }
 
