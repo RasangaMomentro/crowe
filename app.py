@@ -74,23 +74,6 @@ def run_flow(message: str, endpoint: str = FLOW_ID, output_type: str = "chat",
     except requests.exceptions.RequestException as e:
         return {"error": str(e)}
 
-def process_prompt(prompt):
-    # Append to existing messages instead of clearing
-    st.session_state.messages.append({"role": "user", "content": prompt})
-    response = run_flow(prompt)
-    try:
-        if isinstance(response, dict):
-            message = (response.get('outputs', [])[0]
-                      .get('outputs', [])[0]
-                      .get('results', {})
-                      .get('message', {})
-                      .get('data', {})
-                      .get('text', 'No response received'))
-            st.session_state.messages.append({"role": "assistant", "content": message})
-    except Exception as e:
-        st.error(f"Error processing request: {str(e)}")
-    st.rerun()
-
 if "messages" not in st.session_state:
     st.session_state.messages = []
 
@@ -120,44 +103,71 @@ categories = {
     ]
 }
 
-examples_container = st.container()
-chat_container = st.container()
+# Examples section
+st.markdown("""
+    <div style='text-align: center; margin: 2rem 0 1rem 0;'>
+        <h2 style='color: #333333; font-size: 1.5rem;'>Examples</h2>
+    </div>
+""", unsafe_allow_html=True)
 
-with examples_container:
-    st.markdown("""
-        <div style='text-align: center; margin: 2rem 0 1rem 0;'>
-            <h2 style='color: #333333; font-size: 1.5rem;'>Examples</h2>
-        </div>
-    """, unsafe_allow_html=True)
-    
-    st.markdown("""
-        <div style='
-            background-color: #f7f7f8;
-            padding: 1.5rem;
-            border-radius: 0.75rem;
-            margin-bottom: 2rem;
-        '>
-    """, unsafe_allow_html=True)
-    
-    col1, col2, col3 = st.columns(3)
-    
-    for (col, (category, prompts)) in zip([col1, col2, col3], categories.items()):
-        with col:
-            st.markdown(f"<div style='font-weight: bold; margin-bottom: 1rem; color: #333333;'>{category}</div>", 
-                       unsafe_allow_html=True)
-            for prompt in prompts:
-                if st.button(prompt, key=f"sample_{prompt}"):
-                    process_prompt(prompt)
-    
-    st.markdown("</div>", unsafe_allow_html=True)
+st.markdown("""
+    <div style='
+        background-color: #f7f7f8;
+        padding: 1.5rem;
+        border-radius: 0.75rem;
+        margin-bottom: 2rem;
+    '>
+""", unsafe_allow_html=True)
 
-with chat_container:
-    for message in st.session_state.messages:
-        with st.chat_message(message["role"]):
-            st.markdown(message["content"])
+col1, col2, col3 = st.columns(3)
 
-    if prompt := st.chat_input("How can I help you today?"):
-        process_prompt(prompt)
+for (col, (category, prompts)) in zip([col1, col2, col3], categories.items()):
+    with col:
+        st.markdown(f"<div style='font-weight: bold; margin-bottom: 1rem; color: #333333;'>{category}</div>", 
+                   unsafe_allow_html=True)
+        for prompt in prompts:
+            if st.button(prompt, key=f"sample_{prompt}"):
+                st.session_state.messages.append({"role": "user", "content": prompt})
+                response = run_flow(prompt)
+                try:
+                    if isinstance(response, dict):
+                        message = (response.get('outputs', [])[0]
+                                 .get('outputs', [])[0]
+                                 .get('results', {})
+                                 .get('message', {})
+                                 .get('data', {})
+                                 .get('text', 'No response received'))
+                        st.session_state.messages.append({"role": "assistant", "content": message})
+                except Exception as e:
+                    st.error(f"Error processing request: {str(e)}")
+                st.rerun()
+
+st.markdown("</div>", unsafe_allow_html=True)
+
+# Chat display and input
+for message in st.session_state.messages:
+    with st.chat_message(message["role"]):
+        st.markdown(f"""
+            <div class='chat-message {message["role"]}-message'>
+                {message["content"]}
+            </div>
+        """, unsafe_allow_html=True)
+
+if prompt := st.chat_input("How can I help you today?"):
+    st.session_state.messages.append({"role": "user", "content": prompt})
+    response = run_flow(prompt)
+    try:
+        if isinstance(response, dict):
+            message = (response.get('outputs', [])[0]
+                     .get('outputs', [])[0]
+                     .get('results', {})
+                     .get('message', {})
+                     .get('data', {})
+                     .get('text', 'No response received'))
+            st.session_state.messages.append({"role": "assistant", "content": message})
+    except Exception as e:
+        st.error(f"Error processing request: {str(e)}")
+    st.rerun()
 
 st.markdown("---")
 st.markdown("""
